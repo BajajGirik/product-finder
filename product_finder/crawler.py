@@ -17,26 +17,20 @@ class Crawler:
         web_browser_id = None
 
         try: 
-            # print(f"Visiting {url}")
             web_browser_instance = await WebBrowserPool.get_instance()
 
             web_browser = web_browser_instance.web_browser
             web_browser_id = web_browser_instance.get_id()
 
-            print(f"Visiting")
-
             await web_browser.go_to_url(url)
 
             links = await web_browser.get_unique_links_on_page()
-
-            print(f"Fetched")
 
         except Exception as e:
             print(f"Error {url}: {e}")
             return
         finally:
             if web_browser_id is not None:
-                print(f"Releasing")
                 WebBrowserPool.release(web_browser_id)
 
         new_links = []
