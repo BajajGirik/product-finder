@@ -11,7 +11,6 @@ async def crawl(domain):
 async def main():
     domains = ["amazon.in", "flipkart.com"]
 
-    # tasks = [asyncio.create_task(crawl_and_save_results(domain)) for domain in domains]
     coros = [crawl(domain) for domain in domains]
 
     await asyncio.gather(*coros)

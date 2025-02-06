@@ -73,7 +73,6 @@ class WebBrowser:
         await asyncio.sleep(2)
 
     async def get_unique_links_on_page(self):
-        # Todo: Handle infinite scroll
         all_links = set()
 
         while True:
