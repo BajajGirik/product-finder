@@ -1,5 +1,6 @@
 import asyncio
-from crawler import Crawler 
+from crawler import Crawler
+from web_browser import WebBrowserPool 
 
 async def crawl(domain):
     domain_crawler = Crawler(domain)
@@ -9,6 +10,8 @@ async def crawl(domain):
     print(f"{domain} urls saved")
 
 async def main():
+    await WebBrowserPool.setup()
+
     domains = ["amazon.in", "flipkart.com"]
 
     coros = [crawl(domain) for domain in domains]

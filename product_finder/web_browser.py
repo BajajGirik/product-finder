@@ -119,7 +119,6 @@ class WebBrowserPool:
     __concurrent_browsers = CONCURRENT_BROWSERS
     __pool: List[WebBrowserPoolItem] = []
     __semaphore = asyncio.Semaphore(CONCURRENT_BROWSERS)
-    __lock = asyncio.Lock()
 
     @staticmethod
     async def setup_single_browser():
@@ -127,19 +126,18 @@ class WebBrowserPool:
         await web_browser.setup()
         return web_browser
 
+    @staticmethod
+    async def setup():
+        coros = [WebBrowserPool.setup_single_browser() for _ in range(WebBrowserPool.__concurrent_browsers)]
+
+        web_browsers = await asyncio.gather(*coros)
+
+        for web_browser in web_browsers:
+            pool_item = WebBrowserPoolItem(len(WebBrowserPool.__pool), web_browser)
+            WebBrowserPool.__pool.append(pool_item)
 
     @staticmethod
     async def get_instance():
-        async with WebBrowserPool.__lock:
-            if len(WebBrowserPool.__pool) == 0:
-                coros = [WebBrowserPool.setup_single_browser() for _ in range(WebBrowserPool.__concurrent_browsers)]
-
-                web_browsers = await asyncio.gather(*coros)
-
-                for web_browser in web_browsers:
-                    pool_item = WebBrowserPoolItem(len(WebBrowserPool.__pool), web_browser)
-                    WebBrowserPool.__pool.append(pool_item)
-
         await WebBrowserPool.__semaphore.acquire()
 
         for item in WebBrowserPool.__pool:
