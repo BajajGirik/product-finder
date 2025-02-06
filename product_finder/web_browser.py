@@ -73,26 +73,26 @@ class WebBrowser:
         await asyncio.sleep(2)
 
     async def get_unique_links_on_page(self):
-        all_links = set()
-
         while True:
-            elements = await self.__page.query_selector_all("a")
-
-            for element in elements:
-                url = await element.get_attribute("href")
-                if url is None:
-                    continue
-
-                # Improve dedup logic
-                url = URLUtils.get_url_without_query_params(url)
-
-                if url not in all_links:
-                    all_links.add(url)
-
             await self.__scroll_to_bottom()
 
             if (await self.__get_scroll_height()) - self.__last_scroll_height < self.__scroll_threshold:
                 break
+
+        all_links = set()
+
+        elements = await self.__page.query_selector_all("a")
+
+        for element in elements:
+            url = await element.get_attribute("href")
+            if url is None:
+                continue
+
+            # Improve dedup logic
+            url = URLUtils.get_url_without_query_params(url)
+
+            if url not in all_links:
+                all_links.add(url)
 
         return all_links
 
