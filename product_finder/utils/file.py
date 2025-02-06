@@ -2,13 +2,19 @@ import asyncio
 import aiofiles
 
 class FileSingleton:
-    filename = "products_2.txt"
+    __suffix = "products.txt"
+    __locks = {}
 
     @staticmethod
-    async def append_to_file(content):
+    async def append_to_file(domain, content):
+        if domain not in FileSingleton.__locks:
+            FileSingleton.__locks[domain] = asyncio.Lock()
+
+        filename = f"{domain}_{FileSingleton.__suffix}"
+
         try:
-            async with asyncio.Lock():
-                async with aiofiles.open(FileSingleton.filename, "a") as f:
+            async with FileSingleton.__locks[domain]:
+                async with aiofiles.open(f"outputs/{filename}", "a") as f:
                     await f.write(content + "\n")
         except Exception as e:
-            print(f"Error writing to file {FileSingleton.filename}: {e}")
+            print(f"Error writing to file {filename}: {e}")
