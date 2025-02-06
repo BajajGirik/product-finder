@@ -1,15 +1,10 @@
 import asyncio
 from crawler import Crawler 
-from utils.file import FileSingleton
 
-async def crawl_and_save_results(domain):
+async def crawl(domain):
     domain_crawler = Crawler(domain)
 
-    urls = await domain_crawler.crawl()
-
-    urls = "\n".join(urls)
-
-    await FileSingleton.append_to_file(urls)
+    await domain_crawler.crawl()
     
     print(f"{domain} urls saved")
 
@@ -17,7 +12,7 @@ async def main():
     domains = ["amazon.in", "flipkart.com"]
 
     # tasks = [asyncio.create_task(crawl_and_save_results(domain)) for domain in domains]
-    coros = [crawl_and_save_results(domain) for domain in domains]
+    coros = [crawl(domain) for domain in domains]
 
     await asyncio.gather(*coros)
 
