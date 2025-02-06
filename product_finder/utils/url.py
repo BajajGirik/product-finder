@@ -1,7 +1,8 @@
 class URLUtils:
     @staticmethod
-    def create_url_from_domain(domain):
-        return f"https://{domain}"
+    def create_url_from_domain(domain, path = ""):
+        _path = path if path.startswith("/") else f"/{path}"
+        return f"https://{domain}{_path}"
 
     @staticmethod
     def get_url_without_query_params(url):
