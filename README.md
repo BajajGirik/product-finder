@@ -16,3 +16,4 @@ It navigates website structures to extract product pages while handling dynamic 
 1. **Better Product URL Detection**: Add custom handling for different e-commerce platforms
 2. **Multi-threading**: Use threads to offload work (Currently the code heavy relies on asynchronous tasks for efficiency)
 3. **Rate Limiting & Respecting Robots.txt**: Implement better compliance with site policies.
+4. **Docker**: Add docker for easier setup
