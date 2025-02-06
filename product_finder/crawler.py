@@ -35,11 +35,12 @@ class Crawler:
             if web_browser_id is not None:
                 WebBrowserPool.release(web_browser_id)
 
-        new_links = []
+        links_to_explore = []
+        current_product_urls = []
 
         for link in links:
             _link =  link if link.startswith("http") else URLUtils.create_url_from_domain(self.__domain, link)
-            product_url = RegexUtils.get_product_url(_link)
+            product_url, is_single_product_page = RegexUtils.get_product_url(_link)
 
             if not product_url:
                 continue
@@ -47,15 +48,18 @@ class Crawler:
             if product_url in self.__product_urls:
                 continue
 
-            new_links.append(product_url)
+            if is_single_product_page:
+                current_product_urls.append(product_url)
+
+            links_to_explore.append(product_url)
             self.__product_urls.add(product_url)
 
         if depth >= Crawler.max_depth:
             return
 
-        coros = [self.__crawl_page(link, depth + 1) for link in new_links]
+        coros = [self.__crawl_page(link, depth + 1) for link in links_to_explore]
 
-        coros.append(FileSingleton.append_to_file(self.__domain, "\n".join(self.__product_urls)))
+        coros.append(FileSingleton.append_to_file(self.__domain, "\n".join(current_product_urls)))
 
         await asyncio.gather(*coros)
 
