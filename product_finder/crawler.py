@@ -18,6 +18,7 @@ class Crawler:
 
         try: 
             web_browser_instance = await WebBrowserPool.get_instance()
+            print(f"Visiting: {url}")
 
             web_browser = web_browser_instance.web_browser
             web_browser_id = web_browser_instance.get_id()
@@ -30,6 +31,7 @@ class Crawler:
             print(f"Error {url}: {e}")
             return
         finally:
+            print(f"Finished: {url}")
             if web_browser_id is not None:
                 WebBrowserPool.release(web_browser_id)
 
