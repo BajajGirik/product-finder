@@ -113,7 +113,7 @@ class WebBrowserPoolItem:
         self.__is_available = is_available
 
 
-CONCURRENT_BROWSERS = 20
+CONCURRENT_BROWSERS = 15
 
 class WebBrowserPool:
     __concurrent_browsers = CONCURRENT_BROWSERS
